@@ -1,0 +1,176 @@
+<html>
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<title>City Finder</title>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$(document).ready(function() {
+$("#button").click(function(e){
+  var value = $("#cityfield").val();
+  $("#dispcity").text(value);
+  console.log(value);
+  e.preventDefault();
+  var myurl= "https://api.wunderground.com/api/06ad62a984b67083/geolookup/conditions/q/UT/";
+  myurl += value;
+  myurl += ".json";
+  console.log(myurl);
+  $.ajax({
+    url : myurl,
+    dataType : "jsonp",
+    success : function(parsed_json) {
+      var location = parsed_json['location']['city'];
+      var temp_string = parsed_json['current_observation']['temperature_string'];
+      var current_weather = parsed_json['current_observation']['weather'];
+      everything = "<ul>";
+      everything += "<li>Location: "+location;
+      everything += "<li>Temperature: "+temp_string;
+      everything += "<li>Weather: "+current_weather;
+      everything += "</ul>";
+      $("#weather").html(everything);
+    }
+  });
+});
+
+$("#moviebutton").click(function(e){
+  var value = $("#moviefield").val();
+  $("#mymovie").text(value);
+  // console.log(value);
+  e.preventDefault();
+  var myurl= "http://www.omdbapi.com/?t=";
+  myurl += value;
+  myurl += "&y=&plot=short&r=json";
+  console.log(myurl);
+  $.ajax({
+    url : myurl,
+    dataType : "jsonp",
+    success : function(data) {
+      console.log(data);
+      everything = "<ul>";
+      everything += "<li>Title: "+data.Title;
+      everything += "<li>Plot: "+data.Plot;
+      everything += "<li>Year: "+data.Year;
+      everything += "</ul>";
+      $("#movieinfo").html(everything);
+    }
+  });
+});
+
+$("#pokebutton").click(function(e){
+  var value = $("#pokefield").val();
+  $("#mypoke").text(value);
+  // console.log(value);
+  e.preventDefault();
+  var choice = value + " I choose you!!!";
+  $("#pokeinfo").html(choice);
+});
+
+
+$( "#cityfield" ).keyup(function() {
+var url = "../getcity?q="+$("#cityfield").val();
+$.getJSON(url,function(data) {
+    var everything;
+    everything = "<ul>";
+    $.each(data, function(i,item) {
+      everything += "<li> "+data[i].city;
+    });
+    everything += "</ul>";
+    $("#txtHint").html(everything);
+  })
+  .done(function() { console.log('getJSON request succeeded!'); })
+  .fail(function(jqXHR, textStatus, errorThrown) { 
+    console.log('getJSON request failed! ' + textStatus); 
+    console.log("incoming "+jqXHR.responseText);
+  })
+  .always(function() { console.log('getJSON request ended!');
+  })
+  .complete(function() { console.log("complete"); });
+});
+
+$( "#pokefield" ).keyup(function() {
+var url = "../getpoke?q="+$("#pokefield").val();
+$.getJSON(url,function(data) {
+    var everything;
+    everything = "<ul>";
+    $.each(data, function(i,item) {
+      everything += "<li> "+data[i].pokemon;
+    });
+    everything += "</ul>";
+    $("#pokeHint").html(everything);
+  })
+  .done(function() { console.log('getJSON request succeeded!'); })
+  .fail(function(jqXHR, textStatus, errorThrown) { 
+    console.log('getJSON request failed! ' + textStatus); 
+    console.log("incoming "+jqXHR.responseText);
+  })
+  .always(function() { console.log('getJSON request ended!');
+  })
+  .complete(function() { console.log("complete"); });
+});
+
+
+});
+</script>
+
+</head>
+<body>
+
+<div class="row">
+<div class="col-md-6">
+<br>
+<form>
+Enter A Utah City: <input type="text" id="cityfield" value=""><br>
+Suggestion: <span id="txtHint">Empty</span>
+<input id="button" type="submit" value="Submit">
+</form>
+<p>City</p>
+<textarea id="dispcity">No City</textarea>
+<p>Current Weather</p>
+<div id="weather">No weather</div>
+</div>
+
+<div class="col-md-6">
+<br>
+<form>
+Enter A Pokemon: <input type="text" id="pokefield" value=""><br>
+Suggestion: <span id="pokeHint"></span>
+<br>
+<input id="pokebutton" type="submit" value="Submit">
+</form>
+<p>Pokemon</p>
+<textarea id="mypoke">No Pokemon</textarea>
+<p>Pokemon Info</p>
+<div id="pokeinfo">No info</div>
+</div>
+
+</div>
+
+<br>
+<br>
+<h2>Files from previous labs</h2>
+<div>
+<ul>
+ <li> 
+  <a href="http://ec2-52-23-177-52.compute-1.amazonaws.com:3002/internetstuff/test.html">test.html</a>
+ </li>
+<li> 
+  <a href="http://ec2-52-23-177-52.compute-1.amazonaws.com:3002/internetstuff/test2.txt">test2.txt</a>
+ </li>
+<li> 
+  <a href="http://ec2-52-23-177-52.compute-1.amazonaws.com:3002/internetstuff/test3.gif">test3.gif</a>
+ </li>
+<li> 
+  <a href="http://ec2-52-23-177-52.compute-1.amazonaws.com:3002/internetstuff/test4.jpg">test4.jpg</a>
+ </li>
+</ul>
+</div>
+
+</body>
+</html>
